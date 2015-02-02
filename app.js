@@ -1,14 +1,12 @@
 var koa = require('koa');
 var route = require('koa-route');
+var serve = require('koa-static');
 var app = module.exports = koa();
 
-var render = require('./lib/render');
+var homeRoutes = require('./routes/homeRoutes');
 
-function * showHome() {
-    this.body = yield render('home');
-}
+app.use(serve(__dirname + "/public"));
+app.use(route.get('/', homeRoutes.showHome));
 
-
-app.use(route.get('/', showHome));
 app.listen(3000);
 console.log("The app is listening on port 3000");
