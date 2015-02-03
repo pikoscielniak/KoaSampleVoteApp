@@ -16,6 +16,7 @@
     "supertest": "^0.15.0"
   },
   "dependencies": {
+    "co-body": "^1.0.0",
     "co-monk": "^1.0.0",
     "co-views": "^0.2.0",
     "koa": "^0.16.0",
