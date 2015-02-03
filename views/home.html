@@ -3,5 +3,7 @@
 
 {% block content %}
     <h1>Current polls</h1>
-    <p>Will be listed here...</p>
+    {% for question in questions %}
+        <p>{{ question.title}}</p>
+    {% endfor %}
 {% endblock %}
