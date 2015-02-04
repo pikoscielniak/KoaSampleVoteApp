@@ -52,5 +52,5 @@ module.exports.updateQuestion = function * (id) {
 
     var q = yield db.questions.updateById(id, questionToStore);
 
-    this.redirect('/question/' + q._id);
+    this.redirect('/question/' + id);
 };
