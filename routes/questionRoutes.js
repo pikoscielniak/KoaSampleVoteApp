@@ -41,3 +41,16 @@ module.exports.showQuestion = function * (id) {
     };
     this.body = yield render("showQuestion", vm);
 };
+
+module.exports.updateQuestion = function * (id) {
+    var postedData = yield parse(this);
+
+    var questionToStore = {
+        title: postedData.questionTitle,
+        tags: splitAndTrimTagString(postedData.tagString)
+    };
+
+    var q = yield db.questions.updateById(id, questionToStore);
+
+    this.redirect('/question/' + q._id);
+};

@@ -33,5 +33,23 @@ describe("Updating questions", function () {
                 })
                 .expect(200, done);
         });
+
+
+    });
+    it("updates an existing question", function (done) {
+        co(function * () {
+            var q = yield db.questions.insert({
+                title: 'A question?',
+                tags: ['tag1', 'tag2']
+            });
+            request
+                .post('/question/' + q._id)
+                .send({
+                    questionTitle: "An updated question",
+                    tagString: 'tag3, tag4'
+                })
+                .expect('location', '/question/' + q._id)
+                .expect(302);
+        }).then(done, done);
     });
 });
