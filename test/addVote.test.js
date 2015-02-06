@@ -38,8 +38,8 @@ describe("Adding votes", function () {
         request
             .get('/vote?questionId=000000000000000000000000')
             .expect(302)
-            .expect('location','/')
-            .expect('ErrorMessage','No question found for id: 000000000000000000000000')
+            .expect('location', '/')
+            .expect('ErrorMessage', 'No question found for id: 000000000000000000000000')
             .end(done);
     });
 
@@ -48,8 +48,34 @@ describe("Adding votes", function () {
         request
             .get('/vote')
             .expect(302)
-            .expect('location','/')
-            .expect('ErrorMessage','No questionId passed to page')
+            .expect('location', '/')
+            .expect('ErrorMessage', 'No questionId passed to page')
             .end(done);
+    });
+
+    var test_vote_form = {
+        tagString: 'tag1, tag, tag3',
+        questionId: '000000000000000000000000',
+        voteValue: 4
+    };
+
+    it("add vote and redirect to comment page", function (done) {
+
+        request
+            .post('/vote')
+            .send(test_vote_form)
+            .expect('location', /^\/vote\/[0-9a-fA-F]{24}\/comment$/)
+            .expect(302, done);
+    });
+
+    it("requires a question reference", function (done) {
+        delete test_vote_form.questionId;
+
+        request
+            .post('/vote')
+            .send(test_vote_form)
+            .expect('location', '/')
+            .expect('ErrorMessage', 'QuestionId required')
+            .expect(302, done);
     });
 });

@@ -1,5 +1,7 @@
 var render = require('./../lib/render');
+var parse = require('co-body');
 var db = require('./../lib/db');
+var helpers = require('../lib/helpers');
 
 function exists(value) {
     return !!value;
@@ -28,4 +30,36 @@ module.exports.showAddVote = function * () {
         questionId: questionId
     };
     this.body = yield render('newVote', vm);
+};
+
+module.exports.addVote = function * () {
+    var postedData = yield parse(this);
+
+    if (!exists(postedData.questionId)) {
+        this.set('ErrorMessage', "QuestionId required");
+        this.redirect('/');
+        return;
+    }
+
+    var vote = {
+        tags: helpers.splitAndTrimTagString(postedData.tagString),
+        created_at: new Date,
+        questionId: postedData.questionId,
+        value: postedData.voteValue
+    };
+
+    var v = yield db.votes.insert(vote);
+    this.redirect('/vote/' + v._id + '/comment');
+};
+
+module.exports.showAddComment = function * (id) {
+    var vote = yield db.votes.findById(id);
+    this.body = yield render('comment', {voteId: id});
+};
+
+
+module.exports.addComment = function * (id) {
+    var postedData = yield parse(this);
+    var vote = yield db.votes.findAndModify({_id: id}, {$set: {comment: postedData.comment}});
+    this.redirect('/vote?questionId=' + vote.questionId);
 };

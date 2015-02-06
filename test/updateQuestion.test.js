@@ -17,7 +17,7 @@ describe("Updating questions", function () {
         testHelpers.removeAllDocs();
     });
 
-    it("shows a nice page fo rexisting questions", function (done) {
+    it("shows a nice page of rexisting questions", function (done) {
 
         co(function * () {
             var q = yield db.questions.insert({
@@ -49,7 +49,8 @@ describe("Updating questions", function () {
                     tagString: 'tag3, tag4'
                 })
                 .expect('location', '/question/' + q._id)
-                .expect(302);
-        }).then(done, done);
+                .expect(302)
+                .end(done);
+        });
     });
 });
